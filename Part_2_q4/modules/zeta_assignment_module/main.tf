@@ -131,14 +131,14 @@ resource "aws_security_group" "appserver_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [element(aws_subnet.public_subnet.*.id)]
+    cidr_blocks = [element(var.public_subnets_cidr, 0)]
   }
   
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [element(aws_subnet.public_subnet.*.id)]
+    cidr_blocks = [element(var.public_subnets_cidr, 0)]
   }
   
   egress {
@@ -162,7 +162,7 @@ resource "aws_instance" "webserver" {
     key_name = aws_key_pair.key_pair.id
     instance_type = var.webserver_instance_type
     subnet_id = element(aws_subnet.public_subnet.*.id,count.index)
-    vpc_security_group_ids= [aws_security_group.default_sg.id]
+    vpc_security_group_ids= [aws_security_group.webserver_sg.id]
 
     tags = {
       Name = join("-",["webserver",count.index+1])
@@ -175,7 +175,7 @@ resource "aws_instance" "appserver" {
     key_name = aws_key_pair.key_pair.id
     instance_type = var.appserver_instance_type
     subnet_id = element(aws_subnet.private_subnet.*.id,count.index)
-    vpc_security_group_ids= [aws_security_group.default_sg.id]
+    vpc_security_group_ids= [aws_security_group.appserver_sg.id]
 
     tags = {
       Name = join("-",["appserver",count.index+1])
