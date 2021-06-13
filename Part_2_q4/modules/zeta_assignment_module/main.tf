@@ -96,17 +96,51 @@ resource "aws_route_table_association" "private_rt_association" {
   route_table_id = aws_route_table.private_rt.id
 }
 
-resource "aws_security_group" "default_sg" {
+resource "aws_security_group" "webserver_sg" {
   vpc_id      = aws_vpc.vpc.id
-  name        = join("-", [var.name, "default-sg"])
-  description = "Default security group to allow traffic from VPC"
+  name        = join("-", [var.name, "webserver-sg"])
+  description = "Security group to allow traffic to webservers"
   ingress {
-    from_port = "0"
-    to_port   = "0"
-    protocol  = "-1"
-    self      = true
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+}
+
+resource "aws_security_group" "appserver_sg" {
+  vpc_id      = aws_vpc.vpc.id
+  name        = join("-", [var.name, "appserver-sg"])
+  description = "Security group to allow traffic to appservers"
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [element(aws_subnet.public_subnet.*.id)]
+  }
+  
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [element(aws_subnet.public_subnet.*.id)]
+  }
+  
   egress {
     from_port = "0"
     to_port   = "0"
