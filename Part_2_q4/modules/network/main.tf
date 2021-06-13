@@ -115,3 +115,35 @@ resource "aws_security_group" "default_sg" {
   }
 
 }
+
+resource "aws_key_pair" "key_pair"{
+    key_name = var.key_name
+    public_key= file(var.key_path)
+
+}
+
+resource "aws_instance" "webserver" {
+    count = length(var.public_subnets_cidr)
+    ami = var.webserver_ami_id
+    key_name = aws_key_pair.key_pair.id
+    instance_type = var.webserver_instance_type
+    subnet_id = element(aws_subnet.public_subnet.*.id,count.index)
+    vpc_security_group_ids= [aws_security_group.default_sg.id]
+
+    tags = {
+      Name = join("-",["webserver",count.index])
+    }
+} 
+
+resource "aws_instance" "appserver" {
+    count = length(var.private_subnets_cidr)
+    ami = var.appserver_ami_id
+    key_name = aws_key_pair.key_pair.id
+    instance_type = var.appserver_instance_type
+    subnet_id = element(aws_subnet.private_subnet.*.id,count.index)
+    vpc_security_group_ids= [aws_security_group.default_sg.id]
+
+    tags = {
+      Name = join("-",["appserver",count.index])
+    }
+}

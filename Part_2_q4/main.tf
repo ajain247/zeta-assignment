@@ -15,16 +15,10 @@ module "network" {
   public_subnets_cidr  = var.public_subnet_cidr
   private_subnets_cidr = var.private_subnet_cidr
   availability_zones   = local.availability_zones_l
-}
-
-module "ec2" {
-  source = "./modules/ec2"
   key_name = var.key_name
   key_path = var.key_path
   webserver_ami_id = var.webserver_ami_id
   appserver_ami_id = var.appserver_ami_id
-  public_subnets_cidr  = var.public_subnet_cidr
-  private_subnets_cidr = var.private_subnet_cidr
   appserver_instance_type = var.appserver_instance_type
   webserver_instance_type = var.webserver_instance_type 
 }
