@@ -131,7 +131,7 @@ resource "aws_instance" "webserver" {
     vpc_security_group_ids= [aws_security_group.default_sg.id]
 
     tags = {
-      Name = join("-",["webserver",count.index])
+      Name = join("-",["webserver",count.index+1])
     }
 } 
 
@@ -144,6 +144,6 @@ resource "aws_instance" "appserver" {
     vpc_security_group_ids= [aws_security_group.default_sg.id]
 
     tags = {
-      Name = join("-",["appserver",count.index])
+      Name = join("-",["appserver",count.index+1])
     }
 }
