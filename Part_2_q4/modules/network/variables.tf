@@ -1,31 +1,31 @@
 variable "vpc_cidr" {
-    type = string
-    description = "CIDR block for the vpc"
+  type        = string
+  description = "CIDR block for the vpc"
 }
 
 variable "tenancy" {
-    type = string
-    default = "default"
-    description = "Tenancy type for the vpc"
+  type        = string
+  default     = "default"
+  description = "Tenancy type for the vpc"
 }
 
 variable "name" {
-    type = string
-    default = "zeta-assignment"
-    description = "Name of the project"
+  type        = string
+  default     = "zeta-assignment"
+  description = "Name of the project"
 }
 
 variable "public_subnets_cidr" {
-    type = list
-    description = "CIDR block for the public subnets"
+  type        = list(any)
+  description = "CIDR block for the public subnets"
 }
 
 variable "private_subnets_cidr" {
-    type = list
-    description = "CIDR block for the private subnets"
+  type        = list(any)
+  description = "CIDR block for the private subnets"
 }
 
 variable "availability_zones" {
-    type = list
-    description = "CIDR block for the public subnets"
+  type        = list(any)
+  description = "CIDR block for the public subnets"
 }
